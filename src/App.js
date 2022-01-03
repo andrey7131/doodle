@@ -65,13 +65,13 @@ function App() {
             <img src={Logo} width={420} height={140}/>
             <div className="button-wrap">
               <a className="ml-20" rel="noreferrer" href="https://twitter.com/doodleapes_nft" target="_blank">
-                <img alt="Twitter" src={twitterPng} width="60" height="60"/>
+                <img alt="Twitter" src={twitterPng} width="40" height="40"/>
               </a>
               <a className="ml-20" rel="noreferrer" href="https://discord.gg/PyFgjGNtGd" target="_blank">
-                <img alt="Discord" src={discordPng} width="60" height="60"/>
+                <img alt="Discord" src={discordPng} width="40" height="40"/>
               </a>
               <a className="ml-20" rel="noreferrer" href="#" target="_blank">
-                <img alt="Opensea" src={openseaPng} width="60" height="60"/>
+                <img alt="Opensea" src={openseaPng} width="40" height="40"/>
               </a>
               {walletAddress ? 
               <p className="address-text">{walletAddress}</p> :
