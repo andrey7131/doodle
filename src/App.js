@@ -87,7 +87,8 @@ function App() {
                 <img alt="" aria-hidden="true" src={mainPng} width="220" height="220"/>
               </div>
               <h1 className="form-title">GRAB YOURS</h1>
-              <h2 className="sub-title">2500 at 0.05 Max 5 per transactions</h2>
+              {/* <h2 className="sub-title">2500 at 0.05 Max 5 per transactions</h2> */}
+              <h2 className="sub-title">2500 at 0.05 Max 3 per transactions</h2>
               <div className="max-title">Enter Quantity</div>
               <input className="quantity-input" value={quantity} onChange={(e) => setQuantity(e.target.value)} placeholder={0}/>
               <button type="button" class="mint-button" disabled="">MINT</button>
@@ -166,7 +167,7 @@ function App() {
                     </AccordionItemHeading>
                     <AccordionItemPanel>
                         <p>
-                        We really want to keep this project affordable for everybody thi is why we chose a mint price of 0.07 ETH
+                        We really want to keep this project affordable for everybody thi is why we chose a mint price of 0.05 ETH
                         </p>
                     </AccordionItemPanel>
                 </AccordionItem>
@@ -178,7 +179,8 @@ function App() {
                     </AccordionItemHeading>
                     <AccordionItemPanel>
                         <p>
-                        Max 5 per Wallet 
+                        Presale: 3 per wallet
+                        Public: 5 per wallet
                         </p>
                     </AccordionItemPanel>
                 </AccordionItem>
