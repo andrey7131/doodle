@@ -96,7 +96,7 @@ main .mintform {
 }
 
 .mainPng img {
-    border-radius: 50%;
+    border-radius: 30px;
     border: 2.5px solid #333;
 }
 

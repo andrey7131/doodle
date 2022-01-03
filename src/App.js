@@ -3,7 +3,7 @@ import Logo from "./assets/imgs/Logo.png";
 import twitterPng from "./assets/imgs/twitter.png";
 import openseaPng from "./assets/imgs/opensea.png";
 import discordPng from "./assets/imgs/discord.png";
-import mainPng from "./assets/imgs/Hide.jpg";
+import mainPng from "./assets/imgs/hide.gif";
 import team1Png from "./assets/imgs/team1.png";
 import team2Png from "./assets/imgs/team2.jpg";
 import team3Png from "./assets/imgs/team3.jpg";
