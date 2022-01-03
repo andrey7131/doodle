@@ -180,6 +180,7 @@ function App() {
                     <AccordionItemPanel>
                         <p>
                         Presale: 3 per wallet
+                        <br/>
                         Public: 5 per wallet
                         </p>
                     </AccordionItemPanel>
