@@ -70,8 +70,8 @@ function App() {
               <a className="ml-20" rel="noreferrer" href="https://discord.gg/PyFgjGNtGd" target="_blank">
                 <img alt="Discord" src={discordPng} width="60" height="60"/>
               </a>
-              <a className="ml-20" rel="noreferrer" href="https://opensea.io/collection/doodled-punks" target="_blank">
-                <img alt="Twitter" src={openseaPng} width="60" height="60"/>
+              <a className="ml-20" rel="noreferrer" href="#" target="_blank">
+                <img alt="Opensea" src={openseaPng} width="60" height="60"/>
               </a>
               {walletAddress ? 
               <p className="address-text">{walletAddress}</p> :
@@ -105,7 +105,7 @@ function App() {
             <div className="road-map-block">
               <h2 className="block-title">FIRST MERCH DROP - 25%</h2>
               <p className="block-content">
-              The Doodle Apes society without IRL merch to flex ?? You trippin. We’re cooking some pieces for holders : Hoodies, Caps… We will share some ideas and designs soon! 
+              The Doodle Apes society without IRL merch to flex ?? No way. We’ll create some crazy pieces for holders : Hoodies, Caps… We will share some ideas and designs on Discord and the community will make the final decisions.
               </p>
             </div>
             <div className="road-map-block">
@@ -138,7 +138,7 @@ function App() {
                 <AccordionItem uuid={1}>
                     <AccordionItemHeading>
                         <AccordionItemButton className="f-item accordion__button">
-                          What’s an NFT ?
+                          What’s an NFT?
                         </AccordionItemButton>
                     </AccordionItemHeading>
                     <AccordionItemPanel>
@@ -150,7 +150,7 @@ function App() {
                 <AccordionItem  uuid={2}>
                     <AccordionItemHeading>
                         <AccordionItemButton className="se-item accordion__button">
-                        How to buy a Doodle Apes ?
+                        How to buy a Doodle Apes?
                         </AccordionItemButton>
                     </AccordionItemHeading>
                     <AccordionItemPanel>
@@ -174,7 +174,7 @@ function App() {
                 <AccordionItem uuid={4}>
                     <AccordionItemHeading>
                         <AccordionItemButton className="fo-item accordion__button">
-                        How many Doodle Apes can I mint ? 
+                        How many Doodle Apes can I mint? 
                         </AccordionItemButton>
                     </AccordionItemHeading>
                     <AccordionItemPanel>
@@ -188,7 +188,7 @@ function App() {
                 <AccordionItem uuid={5}>
                     <AccordionItemHeading>
                         <AccordionItemButton className="fi-item accordion__button">
-                        If I buy one, where will it be ?
+                        If I buy one, where will it be?
                         </AccordionItemButton>
                     </AccordionItemHeading>
                     <AccordionItemPanel>
