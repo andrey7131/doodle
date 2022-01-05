@@ -1,4 +1,6 @@
 import Web3 from "web3";
+import {NotificationContainer, NotificationManager} from 'react-notifications';
+import 'react-notifications/lib/notifications.css';
 import Logo from "./assets/imgs/Logo.png";
 import twitterPng from "./assets/imgs/twitter.png";
 import openseaPng from "./assets/imgs/opensea.png";
@@ -7,8 +9,14 @@ import mainPng from "./assets/imgs/hide.gif";
 import team1Png from "./assets/imgs/team1.png";
 import team2Png from "./assets/imgs/team2.jpg";
 import team3Png from "./assets/imgs/team3.jpg";
+import kingpng from "./assets/imgs/King.png";
+import alienpng from "./assets/imgs/Alien.png";
+import bubblegumpng from "./assets/imgs/Bubble_Gum.png";
+import skeletonpng from "./assets/imgs/Skeleton.png";
+import spacepng from "./assets/imgs/Space.png";
+import leftarrow from "./assets/imgs/left.png";
+import rightarrow from "./assets/imgs/right.png";
 import './App.css';
-import WOW from 'wowjs';
 import {
   Accordion,
   AccordionItem,
@@ -17,44 +25,107 @@ import {
   AccordionItemPanel,
 } from 'react-accessible-accordion';
 import { useEffect, useState } from "react";
-
-var web3;
-var nftContract;
-var address;
-var chainId;
+import contractAbi from "./abi/doodle.json";
 
 function App() {
+  var web3;
+  var nftContract;
+  var address;
+  var chainId;
+  const [maxQuantity] = useState(3);
   const [quantity, setQuantity] = useState(0);
   const [walletAddress, setWalletAddress] = useState('');
+  const [legendaryState, setLegendaryState] = useState(0);
+  if(window.ethereum != null) {
+  	web3 = new Web3(window.ethereum);
+  } else {
+    notificationfunc("error", 'Can\'t Find Metamask Wallet. Please install it and reload again to mint NFT.');
+  }
 
   const connectWallet = async () => {
     if(window.ethereum != null) {
-      const web3 = new Web3(window.ethereum);
-      nftContract = null;
-      await window.ethereum.request({method: 'eth_chainId'}).then(data => {
-        chainId = data;
+      await window.ethereum.request({method: 'eth_requestAccounts'}).then((data) => {
+        address = data[0];
+        setWalletAddress(address);
       });
-      console.log(chainId);
-      // if(chainId == '0x4') {
-        await window.ethereum.request({method: 'eth_requestAccounts'}).then((data) => {
-          address = data[0];
-          setWalletAddress(address);
-          console.log(address);
-          var minAddr = address.substr(0,6) + "..." + address.substr(address.length - 4);
-          nftContract = {"inputs":[{"internalType":"uint256","name":"chosenAmount","type":"uint256"}],"name":"mint","outputs":[],"stateMutability":"payable","type":"function"};
-        });
-      // } else {
-      //   alert('Please change the network to Rinkeby and try again...')
-      // }
     } else {
-      alert('Can\'t Find Metamask Wallet. Please install it and reload again to mint NFT.');
+      notificationfunc("error", 'Can\'t Find Metamask Wallet. Please install it and reload again to mint NFT.');
     }
   }
 
-   useEffect(() => {
-    new WOW.WOW({
-      live: false
-    }).init();
+  const mintToken = async () => {
+    if (quantity == 0){
+      notificationfunc("warning", "Quantity is 0");
+    } else {
+      if (quantity > maxQuantity) {
+        notificationfunc("error", "Max quantity is " + maxQuantity);
+      } else {
+        nftContract = contractAbi;
+        if (window.ethereum == null) {
+          notificationfunc("error", 'Wallet connect error! Please confirm that connect wallet.');
+        } else {
+          await window.ethereum.request({method: 'eth_chainId'}).then(data => {
+            chainId = data;
+          });
+          if(chainId === '0x4') { //RopeSten, 0x4 Rinkeby
+            const contract = new web3.eth.Contract(nftContract, '0xBb23039E1328Ba343D6F42BD6DC79F5ceB4dA1F4');
+            await contract.methods.mint(walletAddress, quantity).send({
+              value: 50000000000000000 * quantity,
+              from: walletAddress
+            })
+            .then(data => {
+              notificationfunc("success", 'Successfully Minted!');
+            })
+            .catch(err => {
+              notificationfunc("error", err.message);
+            })
+          }else {
+            notificationfunc("info", "Please change the network to Rinkeby and try again...");
+          }
+        }
+      }
+    }
+  }
+
+  const nextLegendary = (nextNumber) => {
+    setLegendaryState(nextNumber);
+  }
+
+  const notificationfunc = (type, message) => {
+    switch (type) {
+      case 'info':
+        NotificationManager.info(message);
+        break;
+      case 'success':
+        NotificationManager.success(message);
+        break;
+      case 'warning':
+        NotificationManager.warning(message, 'Warning', 3000);
+        break;
+      case 'error':
+        NotificationManager.error(message, 'Error', 5000);
+        break;
+    }
+  }
+
+  useEffect(() => {
+    const checkConnection = async () => {
+      // Check if browser is running Metamask
+      let web3;
+      if (window.ethereum) {
+          web3 = new Web3(window.ethereum);
+      } else if (window.web3) {
+          web3 = new Web3(window.web3.currentProvider);
+      };
+      // Check if User is already connected by retrieving the accounts
+      if (web3){
+        web3.eth.getAccounts()
+        .then(async (addr) => {
+            setWalletAddress(addr[0]);
+        });
+      }
+    };
+    checkConnection();
   }, []);
 
   return (
@@ -62,7 +133,7 @@ function App() {
       <div className="container-fluid main-container">
         <div className="page-container">
           <header className="header"> 
-            <img src={Logo} width={420} height={140}/>
+            <img src={Logo} alt="Logo" width={420} height={140}/>
             <div className="button-wrap">
               <a className="ml-20" rel="noreferrer" href="https://twitter.com/doodleapes_nft" target="_blank">
                 <img alt="Twitter" src={twitterPng} width="40" height="40"/>
@@ -74,7 +145,7 @@ function App() {
                 <img alt="Opensea" src={openseaPng} width="40" height="40"/>
               </a>
               {walletAddress ? 
-              <p className="address-text">{walletAddress}</p> :
+              <p className="address-text">{walletAddress.substr(0,6) + "..." + walletAddress.substr(walletAddress.length - 4)}</p> :
               <button onClick={connectWallet} className="connect-button">Connect Wallet</button>
               }
               
@@ -86,16 +157,50 @@ function App() {
               <div className="mt-2 mainPng">
                 <img alt="" aria-hidden="true" src={mainPng} width="220" height="220"/>
               </div>
-              <h1 className="form-title">GRAB YOURS</h1>
+              <h1 className="form-title">
+                <span className="cblue">M</span>
+                <span className="cgreen">I</span>
+                <span className="cpink">N</span>
+                <span className="cpurple">T</span>
+                &nbsp;
+                <span className="cyellow">Y</span>
+                <span className="cblue">O</span>
+                <span className="cpyellow">U</span>
+                <span className="cblue">R</span>
+                <br/>
+                <span className="cgreen">D</span>
+                <span className="cpink">O</span>
+                <span className="cpurple">O</span>
+                <span className="cyellow">D</span>
+                <span className="cblue">L</span>
+                <span className="cpyellow">E</span>
+                &nbsp;
+                <span className="cblue">A</span>
+                <span className="cgreen">P</span>
+                <span className="cpink">E</span>
+                <span className="cblue">S</span>
+              </h1>
               {/* <h2 className="sub-title">2500 at 0.05 Max 5 per transactions</h2> */}
-              <h2 className="sub-title">2500 at 0.05 Max 3 per transactions</h2>
+              {/* <h2 className="sub-title">2500 at 0.05 Max 3 per transactions</h2> */}
               <div className="max-title">Enter Quantity</div>
-              <input className="quantity-input" value={quantity} onChange={(e) => setQuantity(e.target.value)} placeholder={0}/>
-              <button type="button" class="mint-button" disabled="">MINT</button>
+              <input className="quantity-input" type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} placeholder={0}/>
+              <button type="button" class="mint-button" disabled="" onClick={mintToken}>MINT</button>
             </div>
           </main>
           <div className="road-map">
-            <h1 className="page-block-title">ROADMAP</h1>
+            <h1 className="page-block-title">
+              <span className="cblue">R</span>
+              <span className="cgreen">O</span>
+              <span className="cpink">A</span>
+              <span className="cpurple">D</span>
+              <span className="cyellow">M</span>
+              <span className="cpurple">A</span>
+              <span className="clblue">P</span>
+              &nbsp;
+              <span className="cpink">1</span>
+              <span className="cpurple">.</span>
+              <span className="cyellow">0</span>
+            </h1>
             <div className="road-map-block">
               <h2 className="block-title">CREATE A QUALITY COMMUNITY - 0%</h2>
               <p className="block-content">
@@ -128,8 +233,130 @@ function App() {
             </div>
           </div>
 
+          <div className="legendary">
+            <h1 className="page-block-title">
+              <span className="cblue">L</span>
+              <span className="cgreen">E</span>
+              <span className="cpink">G</span>
+              <span className="cpurple">E</span>
+              <span className="cyellow">N</span>
+              <span className="clblue">D</span>
+              <span className="cgreen">A</span>
+              <span className="cpink">R</span>
+              <span className="cpurple">Y</span>
+              &nbsp;
+              <span className="cyellow">D</span>
+              <span className="clblue">O</span>
+              <span className="cpyellow">O</span>
+              <span className="cblue">D</span>
+              <span className="cgreen">L</span>
+              <span className="cpink">E</span>
+              &nbsp;
+              <span className="cblue">A</span>
+              <span className="cgreen">P</span>
+              <span className="cpink">E</span>
+              <span className="cpurple">S</span>
+            </h1>
+            { legendaryState == 0 ? <div>
+              <h4 className="lendary-name">
+                N.1 - The king
+              </h4>
+              <div className="slider">
+                <img className="legendary-img" src={kingpng} width={250} height={250}/>
+                <button className="right-arrow green-btn" onClick={() => nextLegendary(1)}>
+                  <img src={rightarrow} width={30}/>
+                </button>
+              </div>
+              <p>
+                This little boy is the king of the Doodle Apes Society! If you mint it the D.A.S team will send 10k straight to your wallet! You can do whatever you want with this money.
+              </p>
+            </div>
+            : null
+            }
+            { legendaryState == 1 ? <div>
+              <h4 className="lendary-name">
+                N.2 - Mister Bubble Gum
+              </h4>
+              <div className="slider">
+                <button className="left-arrow yellow-btn" onClick={() => nextLegendary(0)}>
+                  <img src={leftarrow} width={30}/>
+                </button>
+                <img className="legendary-img" src={bubblegumpng} width={250} height={250}/>
+                <button className="right-arrow blue-btn" onClick={() => nextLegendary(2)}>
+                  <img src={rightarrow} width={30}/>
+                </button>
+              </div>
+              <p>
+                Pack your bag, we're taking off! This Doodle Ape allows you to choose the trip of your dreams anywhere in the world. We take care of everything! Tokyo, LA, Dubai we'll organize the trip of your dream.
+              </p>
+            </div>
+            : null
+            }
+            { legendaryState == 2 ? <div>
+              <h4 className="lendary-name">
+                N.3 - Alien Ape
+              </h4>
+              <div className="slider">
+                <button className="left-arrow pink-btn" onClick={() => nextLegendary(1)}>
+                  <img src={leftarrow} width={30}/>
+                </button>
+                <img className="legendary-img" src={alienpng} width={250} height={250}/>
+                <button className="right-arrow purple-btn" onClick={() => nextLegendary(3)}>
+                  <img src={rightarrow} width={30}/>
+                </button>
+              </div>
+              <p>
+                SHOPPING TIME! This little Alien Ape allows you to sepend 5k to buy whatever you want (PS5, Iphone, Clothes..) It's time to reward yourself with some gifts.
+              </p>
+            </div>
+            : null
+            }
+            { legendaryState == 3 ? <div>
+              <h4 className="lendary-name">
+                N.4 - Alien Ape
+              </h4>
+              <div className="slider">
+                <button className="left-arrow blue-btn" onClick={() => nextLegendary(2)}>
+                  <img src={leftarrow} width={30}/>
+                </button>
+                <img className="legendary-img" src={spacepng} width={250} height={250}/>
+                <button className="right-arrow green-btn" onClick={() => nextLegendary(4)}>
+                  <img src={rightarrow} width={30}/>
+                </button>
+              </div>
+              <p>
+                We want to bring you to the event of your dream! NBA games? Concert? Champions league game? You can choose the event of your choice and the D.A.S team will organize the best moment of your life!
+              </p>
+            </div>
+            : null
+            }
+            { legendaryState == 4 ? <div>
+              <h4 className="lendary-name">
+                N.5 - Skeleton Ape
+              </h4>
+              <div className="slider">
+                <button className="left-arrow purple-btn" onClick={() => nextLegendary(3)}>
+                  <img src={leftarrow} width={30}/>
+                </button>
+                <img className="legendary-img" src={skeletonpng} width={250} height={250}/>
+                <button className="right-arrow pyellow-btn" onClick={() => nextLegendary(0)}>
+                  <img src={rightarrow} width={30}/>
+                </button>
+              </div>
+              <p>
+                This is the Skeleton Ape if you mint this little boy he will help you to improve your NFT journey! The D.A.S teams will send you 1 ETH + 3 Free Doodle Apes straight to your wallet!
+              </p>
+            </div>
+            : null
+            }
+          </div>
+
           <div className="faq">
-            <h1 className="page-block-title">FAQ</h1>
+            <h1 className="page-block-title">
+              <span className="cblue">F</span>
+              <span className="cgreen">A</span>
+              <span className="cpink">Q</span>
+            </h1>
             <div className="faq-wrap">
               <Accordion 
                 allowMultipleExpanded={true}
@@ -202,25 +429,42 @@ function App() {
           </div>
 
           <div className="team">
-            <h1 className="page-block-title">DOODLE APES TEAM</h1>
+            <h1 className="page-block-title">
+              <span className="cblue">D</span>
+              <span className="cgreen">O</span>
+              <span className="cpink">O</span>
+              <span className="cpurple">D</span>
+              <span className="cyellow">L</span>
+              <span className="clblue">E</span>
+              &nbsp;
+              <span className="cgreen">A</span>
+              <span className="cpink">P</span>
+              <span className="cpurple">E</span>
+              <span className="cyellow">S</span>
+              &nbsp;
+              <span className="clblue">T</span>
+              <span className="cpyellow">E</span>
+              <span className="cblue">A</span>
+              <span className="cgreen">M</span>
+            </h1>
 
             <div className="team-content">
               <div>
-                <img src={team1Png} width={200} height={200}/>
+                <img src={team1Png} alt="Founder/Artist" width={200} height={200}/>
                 <div className="founder">
                   <h3>OBI D.A.S</h3>
                   <p>Founder/Artist</p>
                 </div>
               </div>
               <div>
-              <img src={team2Png} width={200} height={200}/>
+              <img src={team2Png} alt="Co-founder/Marketing" width={200} height={200}/>
               <div className="founder">
                   <h3>KBIRD</h3>
                   <p>Co-founder/Marketing</p>
                 </div>
               </div>
               <div>
-              <img src={team3Png} width={200} height={200}/>
+              <img src={team3Png} alt="Project Developer" width={200} height={200}/>
               <div className="founder">
                   <h3>Andreii</h3>
                   <p>Project Developer</p>
@@ -228,31 +472,10 @@ function App() {
               </div>
             </div>
           </div>
-
-          {/* <div className="contracts">
-            <h1 className="page-block-title">OUR</h1>
-            <h1 className="page-block-title">CONTRACTS</h1>
-
-            <div className="contracts-content">
-              <a>Verified NFT Smart Contract</a>
-              <a>Verified Staking Smart Contract</a>
-              <a>Verified Coin Smart Contract</a>
-            </div>
-          </div>
-          
-          
-          <div className="footer page-block">
-            <div>
-            </div>
-            <div>
-              <p>
-                Doodled Punks is marked with CCO 1.0
-              </p>
-            </div>
-          </div> */}
         </div>
         
       </div>
+      <NotificationContainer/>
     </div>
   );
 }

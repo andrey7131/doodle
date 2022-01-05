@@ -19,6 +19,34 @@
     src: url('./assets/fonts/IBMPlexMono-Regular.ttf');
 }
 
+.cblue {
+    color: #99e2ff;
+}
+
+.cgreen {
+    color: #b3fec7;
+}
+
+.cpink {
+    color: #fea4d4;
+}
+
+.cpurple {
+    color: #c5c5ff;
+}
+
+.cyellow {
+    color: #ffe780;
+}
+
+.cpyellow {
+    color: #ffe780;
+}
+
+.clblue {
+    color: #bbefff;
+}
+
 .App {
     text-align: center;
 }
@@ -113,13 +141,14 @@ main .mintform {
 }
 
 .form-title {
-    font-weight: 700;
-    font-size: 30px;
+    font-size: 35px;
     line-height: 2.25rem;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
     color: black;
     letter-spacing: 4px;
+    word-break: break-all;
+    -webkit-text-stroke: 1.4px #463c3c;
 }
 
 .sub-title {
@@ -169,6 +198,8 @@ main .mintform {
 .page-block-title {
     font-size: 45px;
     letter-spacing: 5px;
+    -webkit-text-stroke: 1.4px #463c3c;
+    word-break: break-all;
 }
 
 .road-map {
@@ -190,6 +221,84 @@ main .mintform {
     font-family: IBMPlexMono-Regular;
     line-height: 26px;
     padding: 0 25px;
+}
+
+.legendary {
+    border: 2.5px solid #333;
+    border-right-width: 3.5px;
+    border-radius: 10px;
+    max-width: 860px;
+    margin: 35px auto;
+    padding: 25px 25px 15px;
+    background-color: #FFF;
+}
+
+.lendary-name {
+    letter-spacing: 3px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+.slider {
+    display: flex;
+    max-width: 500px;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.slider button {
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #333;
+}
+
+.left-arrow {
+    position: absolute;
+    left: 0;
+}
+
+.right-arrow {
+    position: absolute;
+    right: 0;
+}
+
+.slider button:hover {
+    box-shadow: 1px 1px 3px #565656;
+}
+
+.yellow-btn {
+    background-color: #ffe780;
+}
+
+.green-btn {
+    background-color: #b3fec7;
+}
+
+.blue-btn {
+    background-color: #99e2ff;
+}
+
+.pyellow-btn {
+    background-color: #ffe780;
+}
+
+.purple-btn {
+    background-color: #c5c5ff;
+}
+
+.pink-btn {
+    background-color: #fea4d4;
+}
+
+.slider img.legendary-img {
+    border-radius: 10px;
+    border: 2.5px solid #333;
+    border-left-width: 3.5px;
 }
 
 .faq {
@@ -303,6 +412,10 @@ main .mintform {
     margin-bottom: 50px;
 }
 
+.notification-container {
+    font-family: IBMPlexMono-Regular;
+}
+
 @media only screen and (min-width: 1366px) {
     .page-container {
         width: 1140px !important;
@@ -348,6 +461,12 @@ main .mintform {
     .phones-mockup .phone {
         width: 203px !important;
         height: 439px !important;
+    }
+}
+
+@media only screen and (max-width: 860px) {
+    .legendary {
+        margin: 35px 25px;
     }
 }
 
