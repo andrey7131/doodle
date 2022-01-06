@@ -200,6 +200,13 @@ main .mintform {
     letter-spacing: 5px;
     -webkit-text-stroke: 1.4px #463c3c;
     word-break: break-all;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.page-block-title p {
+    margin-bottom: 0;
 }
 
 .road-map {

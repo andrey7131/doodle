@@ -237,6 +237,7 @@ function App() {
 
           <div className="legendary">
             <h1 className="page-block-title">
+              <p>
               <span className="cblue">L</span>
               <span className="cgreen">E</span>
               <span className="cpink">G</span>
@@ -246,18 +247,23 @@ function App() {
               <span className="cgreen">A</span>
               <span className="cpink">R</span>
               <span className="cpurple">Y</span>
+              </p>
               &nbsp;
+              <p>
               <span className="cyellow">D</span>
               <span className="clblue">O</span>
               <span className="cpyellow">O</span>
               <span className="cblue">D</span>
               <span className="cgreen">L</span>
               <span className="cpink">E</span>
+              </p>
               &nbsp;
+              <p>
               <span className="cblue">A</span>
               <span className="cgreen">P</span>
               <span className="cpink">E</span>
               <span className="cpurple">S</span>
+              </p>
             </h1>
             { legendaryState == 0 ? <div>
               <h4 className="lendary-name">
