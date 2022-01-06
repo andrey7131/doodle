@@ -69,7 +69,7 @@ function App() {
               chainId = data;
             });
             if(chainId === '0x4') { //RopeSten, 0x4 Rinkeby
-              const contract = new web3.eth.Contract(nftContract, '0xefe5CDe9dA7C3686BE90468744d9B9ca0120FC85');
+              const contract = new web3.eth.Contract(nftContract, '0xd9145CCE52D386f254917e481eB44e9943F39138');
               await contract.methods.mint(walletAddress, quantity).send({
                 value: 50000000000000000 * quantity,
                 from: walletAddress
