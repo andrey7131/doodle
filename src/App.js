@@ -27,6 +27,10 @@ import {
 import { useEffect, useState } from "react";
 import contractAbi from "./abi/doodle.json";
 
+const contratAddress1 = "0xfddB74cAf304aD2eB3A04BADc661fcec18EeE31d";
+const contratAddress2 = "0xfddB74cAf304aD2eB3A04BADc661fcec18EeE31d";
+const contratAddress3 = "0xfddB74cAf304aD2eB3A04BADc661fcec18EeE31d";
+
 function App() {
   var web3;
   var nftContract;
@@ -36,6 +40,7 @@ function App() {
   const [quantity, setQuantity] = useState(0);
   const [walletAddress, setWalletAddress] = useState('');
   const [legendaryState, setLegendaryState] = useState(0);
+  const [leftToken, setLeftToken] = useState(2500);
   if(window.ethereum != null) {
   	web3 = new Web3(window.ethereum);
   }
@@ -69,7 +74,7 @@ function App() {
               chainId = data;
             });
             if(chainId === '0x4') { //RopeSten, 0x4 Rinkeby
-              const contract = new web3.eth.Contract(nftContract, '0xfddB74cAf304aD2eB3A04BADc661fcec18EeE31d');
+              const contract = new web3.eth.Contract(nftContract, contratAddress1);
               await contract.methods.mint(walletAddress, quantity).send({
                 value: 50000000000000000 * quantity,
                 from: walletAddress
@@ -132,6 +137,23 @@ function App() {
       }
     };
     checkConnection();
+
+    setInterval( async () => {
+      if (web3){
+        let contract = new web3.eth.Contract(contractAbi, contratAddress1);
+        if (contract){
+          await contract.methods.totalSupply().call((err, result) => {
+            if (err){
+              console.log(err);
+            } else {
+              let leftTokenNumber = 2500 - result;
+              setLeftToken(leftTokenNumber);
+            }
+          })
+          
+        }
+      }
+    }, 2000);
   }, []);
 
   return (
@@ -190,7 +212,8 @@ function App() {
               {/* <h2 className="sub-title">2500 at 0.05 Max 3 per transactions</h2> */}
               <div className="max-title">Enter Quantity</div>
               <input className="quantity-input" type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} placeholder={0}/>
-              <button type="button" class="mint-button" disabled="" onClick={nopresale}>MINT</button>
+              <button type="button" className="mint-button" disabled="" onClick={nopresale}>MINT</button>
+              <h3 className="left-token"><span className="cgreen">{leftToken}</span>/<span className="cpink">2500</span> <span className="cblue">left</span></h3>
             </div>
           </main>
           <div className="road-map">

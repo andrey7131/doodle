@@ -196,6 +196,14 @@ main .mintform {
     width: 100%;
 }
 
+.left-token {
+    margin-top: 20px;
+    color: #ffe780;
+    font-size: 30px;
+    -webkit-text-stroke: 1.5px #585252;
+    letter-spacing: 2px;
+}
+
 .page-block-title {
     font-size: 35px;
     letter-spacing: 5px;
