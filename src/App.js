@@ -110,6 +110,10 @@ function App() {
     }
   }
 
+  const nopresale = () => {
+    notificationfunc("info", "Mint presale will be live on Jan 8th");
+  }
+
   useEffect(() => {
     const checkConnection = async () => {
       // Check if browser is running Metamask
@@ -186,7 +190,7 @@ function App() {
               {/* <h2 className="sub-title">2500 at 0.05 Max 3 per transactions</h2> */}
               <div className="max-title">Enter Quantity</div>
               <input className="quantity-input" type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} placeholder={0}/>
-              <button type="button" class="mint-button" disabled="" onClick={mintToken}>MINT</button>
+              <button type="button" class="mint-button" disabled="" onClick={nopresale}>MINT</button>
             </div>
           </main>
           <div className="road-map">
