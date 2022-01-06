@@ -38,8 +38,6 @@ function App() {
   const [legendaryState, setLegendaryState] = useState(0);
   if(window.ethereum != null) {
   	web3 = new Web3(window.ethereum);
-  } else {
-    notificationfunc("error", 'Can\'t Find Metamask Wallet. Please install it and reload again to mint NFT.');
   }
 
   const connectWallet = async () => {
@@ -54,33 +52,37 @@ function App() {
   }
 
   const mintToken = async () => {
-    if (quantity == 0){
-      notificationfunc("warning", "Quantity is 0");
+    if (!walletAddress){
+      notificationfunc("info", 'Please connect Metamask before mint!');
     } else {
-      if (quantity > maxQuantity) {
-        notificationfunc("error", "Max quantity is " + maxQuantity);
+      if (quantity == 0){
+        notificationfunc("warning", "Quantity is 0");
       } else {
-        nftContract = contractAbi;
-        if (window.ethereum == null) {
-          notificationfunc("error", 'Wallet connect error! Please confirm that connect wallet.');
+        if (quantity > maxQuantity) {
+          notificationfunc("error", "Max quantity is " + maxQuantity);
         } else {
-          await window.ethereum.request({method: 'eth_chainId'}).then(data => {
-            chainId = data;
-          });
-          if(chainId === '0x4') { //RopeSten, 0x4 Rinkeby
-            const contract = new web3.eth.Contract(nftContract, '0xefe5CDe9dA7C3686BE90468744d9B9ca0120FC85');
-            await contract.methods.mint(walletAddress, quantity).send({
-              value: 50000000000000000 * quantity,
-              from: walletAddress
-            })
-            .then(data => {
-              notificationfunc("success", 'Successfully Minted!');
-            })
-            .catch(err => {
-              notificationfunc("error", err.message);
-            })
-          }else {
-            notificationfunc("info", "Please change the network to Rinkeby and try again...");
+          nftContract = contractAbi;
+          if (window.ethereum == null) {
+            notificationfunc("error", 'Wallet connect error! Please confirm that connect wallet.');
+          } else {
+            await window.ethereum.request({method: 'eth_chainId'}).then(data => {
+              chainId = data;
+            });
+            if(chainId === '0x4') { //RopeSten, 0x4 Rinkeby
+              const contract = new web3.eth.Contract(nftContract, '0xefe5CDe9dA7C3686BE90468744d9B9ca0120FC85');
+              await contract.methods.mint(walletAddress, quantity).send({
+                value: 50000000000000000 * quantity,
+                from: walletAddress
+              })
+              .then(data => {
+                notificationfunc("success", 'Successfully Minted!');
+              })
+              .catch(err => {
+                notificationfunc("error", err.message);
+              })
+            }else {
+              notificationfunc("info", "Please change the network to Rinkeby and try again...");
+            }
           }
         }
       }
