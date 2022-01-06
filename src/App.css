@@ -196,7 +196,7 @@ main .mintform {
 }
 
 .page-block-title {
-    font-size: 45px;
+    font-size: 35px;
     letter-spacing: 5px;
     -webkit-text-stroke: 1.4px #463c3c;
     word-break: break-all;
@@ -212,7 +212,7 @@ main .mintform {
 }
 
 .road-map-block .block-title {
-    font-size: 24px;
+    font-size: 22px;
     color: rgb(33 37 41);
 }
 
@@ -255,6 +255,9 @@ main .mintform {
     height: 50px;
     border-radius: 50%;
     border: 2px solid #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .left-arrow {

@@ -315,7 +315,7 @@ function App() {
             }
             { legendaryState == 3 ? <div>
               <h4 className="lendary-name">
-                N.4 - Alien Ape
+                N.4 - Space Ape
               </h4>
               <div className="slider">
                 <button className="left-arrow blue-btn" onClick={() => nextLegendary(2)}>
@@ -396,7 +396,7 @@ function App() {
                     </AccordionItemHeading>
                     <AccordionItemPanel>
                         <p>
-                        We really want to keep this project affordable for everybody thi is why we chose a mint price of 0.05 ETH
+                        We really want to keep this project affordable for everybody this is why we chose a mint price of 0.05 ETH
                         </p>
                     </AccordionItemPanel>
                 </AccordionItem>
@@ -430,7 +430,7 @@ function App() {
             </div>
           </div>
 
-          <div className="team">
+          {/* <div className="team">
             <h1 className="page-block-title">
               <span className="cblue">D</span>
               <span className="cgreen">O</span>
@@ -473,7 +473,7 @@ function App() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
         
       </div>
