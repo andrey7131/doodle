@@ -30,6 +30,7 @@ import contractAbi from "./abi/doodle.json";
 const contratAddress1 = "0xfddB74cAf304aD2eB3A04BADc661fcec18EeE31d";
 const contratAddress2 = "0xfddB74cAf304aD2eB3A04BADc661fcec18EeE31d";
 const contratAddress3 = "0xfddB74cAf304aD2eB3A04BADc661fcec18EeE31d";
+const sale = false;
 
 function App() {
   var web3;
@@ -137,23 +138,24 @@ function App() {
       }
     };
     checkConnection();
-
-    setInterval( async () => {
-      if (web3){
-        let contract = new web3.eth.Contract(contractAbi, contratAddress1);
-        if (contract){
-          await contract.methods.totalSupply().call((err, result) => {
-            if (err){
-              console.log(err);
-            } else {
-              let leftTokenNumber = 2500 - result;
-              setLeftToken(leftTokenNumber);
-            }
-          })
-          
+    if (sale) {
+      setInterval( async () => {
+        if (web3){
+          let contract = new web3.eth.Contract(contractAbi, contratAddress1);
+          if (contract){
+            await contract.methods.totalSupply().call((err, result) => {
+              if (err){
+                console.log(err);
+              } else {
+                let leftTokenNumber = 2500 - result;
+                setLeftToken(leftTokenNumber);
+              }
+            })
+            
+          }
         }
-      }
-    }, 2000);
+      }, 2000);
+    }
   }, []);
 
   return (
