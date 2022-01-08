@@ -77,7 +77,8 @@ function App() {
             const wlUsers = wlUserList;
 
             const leaves = wlUsers.map(x => keccak256(x));
-            const tree = new MerkleTree(leaves, keccak256, {sortPairs: true});
+            const tree = new MerkleTree(leaves, keccak256);
+            const root = tree.getRoot().toString('hex');
             const leaf = keccak256(walletAddress);
             const userIndex = wlUsers.indexOf(walletAddress);
             const hexProof = tree.getHexProof(leaf);
