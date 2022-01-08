@@ -24,7 +24,7 @@ import { useEffect, useState } from "react";
 import contractAbi from "./abi/doodle.json";
 import wlUserList from "./wl/user.json";
 
-const contractAddress1 = "0xB1BA17807837Eecb2FFE4f8980669471237594B9"; // Test Net
+const contractAddress1 = "0x0e099d20e5f8fAD56C3BDb18Fe499Bc958248251"; // Test Net
 const contratAddress2 = "0x0e099d20e5f8fAD56C3BDb18Fe499Bc958248251"; //Main Net
 const contratAddress3 = "0x0e099d20e5f8fAD56C3BDb18Fe499Bc958248251"; // Main Net
 const sale = true;
