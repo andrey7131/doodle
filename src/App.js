@@ -3,12 +3,8 @@ import {NotificationContainer, NotificationManager} from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 import Logo from "./assets/imgs/Logo.png";
 import twitterPng from "./assets/imgs/twitter.png";
-import openseaPng from "./assets/imgs/opensea.png";
 import discordPng from "./assets/imgs/discord.png";
 import mainPng from "./assets/imgs/hide.gif";
-import team1Png from "./assets/imgs/team1.png";
-import team2Png from "./assets/imgs/team2.jpg";
-import team3Png from "./assets/imgs/team3.jpg";
 import kingpng from "./assets/imgs/King.png";
 import alienpng from "./assets/imgs/Alien.png";
 import bubblegumpng from "./assets/imgs/Bubble_Gum.png";
@@ -26,11 +22,12 @@ import {
 } from 'react-accessible-accordion';
 import { useEffect, useState } from "react";
 import contractAbi from "./abi/doodle.json";
+import wlUserList from "./wl/user.json";
 
-const contratAddress1 = "0xfddB74cAf304aD2eB3A04BADc661fcec18EeE31d";
-const contratAddress2 = "0xfddB74cAf304aD2eB3A04BADc661fcec18EeE31d";
-const contratAddress3 = "0xfddB74cAf304aD2eB3A04BADc661fcec18EeE31d";
-const sale = false;
+const contractAddress1 = "0xB1BA17807837Eecb2FFE4f8980669471237594B9"; // Test Net
+const contratAddress2 = "0x0e099d20e5f8fAD56C3BDb18Fe499Bc958248251"; //Main Net
+const contratAddress3 = "0x0e099d20e5f8fAD56C3BDb18Fe499Bc958248251"; // Main Net
+const sale = true;
 
 function App() {
   var web3;
@@ -61,8 +58,8 @@ function App() {
     if (!walletAddress){
       notificationfunc("info", 'Please connect Metamask before mint!');
     } else {
-      if (quantity == 0){
-        notificationfunc("warning", "Quantity is 0");
+      if (quantity <= 0){
+        notificationfunc("warning", "Quantity should be more than 0.");
       } else {
         if (quantity > maxQuantity) {
           notificationfunc("error", "Max quantity is " + maxQuantity);
@@ -74,20 +71,35 @@ function App() {
             await window.ethereum.request({method: 'eth_chainId'}).then(data => {
               chainId = data;
             });
-            if(chainId === '0x4') { //RopeSten, 0x4 Rinkeby
-              const contract = new web3.eth.Contract(nftContract, contratAddress1);
-              await contract.methods.mint(walletAddress, quantity).send({
-                value: 50000000000000000 * quantity,
-                from: walletAddress
-              })
-              .then(data => {
-                notificationfunc("success", 'Successfully Minted!');
-              })
-              .catch(err => {
-                notificationfunc("error", err.message);
-              })
+
+            const { MerkleTree } = require('merkletreejs')
+            const keccak256 = require('keccak256');
+            const wlUsers = wlUserList;
+
+            const leaves = wlUsers.map(x => keccak256(x));
+            const tree = new MerkleTree(leaves, keccak256, {sortPairs: true});
+            const leaf = keccak256(walletAddress);
+            const userIndex = wlUsers.indexOf(walletAddress);
+            const hexProof = tree.getHexProof(leaf);
+
+            if(chainId === '0x1') {
+              const contract = new web3.eth.Contract(nftContract, contractAddress1);
+              if (hexProof.length){
+                await contract.methods.mint(walletAddress, quantity, hexProof, userIndex).send({
+                  value: 50000000000000000 * quantity,
+                  from: walletAddress
+                })
+                .then(data => {
+                  notificationfunc("success", 'Successfully Minted!');
+                })
+                .catch(err => {
+                  notificationfunc("error", err.message);
+                })
+              } else {
+                notificationfunc("warning", "You are not whitelist user.");
+              }
             }else {
-              notificationfunc("info", "Please change the network to Rinkeby and try again...");
+              notificationfunc("info", "Please change the network to Ethereum Mainnet and try again...");
             }
           }
         }
@@ -112,6 +124,8 @@ function App() {
         break;
       case 'error':
         NotificationManager.error(message, 'Error', 5000);
+        break;
+      default:
         break;
     }
   }
@@ -141,7 +155,7 @@ function App() {
     if (sale) {
       setInterval( async () => {
         if (web3){
-          let contract = new web3.eth.Contract(contractAbi, contratAddress1);
+          let contract = new web3.eth.Contract(contractAbi, contractAddress1);
           if (contract){
             await contract.methods.totalSupply().call((err, result) => {
               if (err){
@@ -213,8 +227,8 @@ function App() {
               {/* <h2 className="sub-title">2500 at 0.05 Max 5 per transactions</h2> */}
               {/* <h2 className="sub-title">2500 at 0.05 Max 3 per transactions</h2> */}
               <div className="max-title">Enter Quantity</div>
-              <input className="quantity-input" type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} placeholder={0}/>
-              <button type="button" className="mint-button" disabled="" onClick={nopresale}>MINT</button>
+              <input className="quantity-input" type="number" value={quantity} onChange={(e) => setQuantity(e.target.value < 0 ? 0  : e.target.value)} placeholder={0} min="0"/>
+              <button type="button" className="mint-button" disabled="" onClick={sale ? mintToken : nopresale}>MINT</button>
               <h3 className="left-token"><span className="cgreen">{leftToken}</span>/<span className="cpink">2500</span> <span className="cblue">left</span></h3>
             </div>
           </main>
@@ -294,14 +308,14 @@ function App() {
               <span className="cpurple">S</span>
               </p>
             </h1>
-            { legendaryState == 0 ? <div>
+            { legendaryState === 0 ? <div>
               <h4 className="lendary-name">
                 N.1 - The king
               </h4>
               <div className="slider">
-                <img className="legendary-img" src={kingpng} width={250} height={250}/>
+                <img className="legendary-img" src={kingpng} width={250} height={250} alt="Legendary"/>
                 <button className="right-arrow green-btn" onClick={() => nextLegendary(1)}>
-                  <img src={rightarrow} width={30}/>
+                  <img src={rightarrow} width={30} alt="Right Arrow"/>
                 </button>
               </div>
               <p>
@@ -310,17 +324,17 @@ function App() {
             </div>
             : null
             }
-            { legendaryState == 1 ? <div>
+            { legendaryState === 1 ? <div>
               <h4 className="lendary-name">
                 N.2 - Mister Bubble Gum
               </h4>
               <div className="slider">
                 <button className="left-arrow yellow-btn" onClick={() => nextLegendary(0)}>
-                  <img src={leftarrow} width={30}/>
+                  <img src={leftarrow} width={30} alt="Left Arrow"/>
                 </button>
-                <img className="legendary-img" src={bubblegumpng} width={250} height={250}/>
+                <img className="legendary-img" src={bubblegumpng} width={250} height={250} alt="Legendary"/>
                 <button className="right-arrow blue-btn" onClick={() => nextLegendary(2)}>
-                  <img src={rightarrow} width={30}/>
+                  <img src={rightarrow} width={30} alt="Right Arrow"/>
                 </button>
               </div>
               <p>
@@ -329,17 +343,17 @@ function App() {
             </div>
             : null
             }
-            { legendaryState == 2 ? <div>
+            { legendaryState === 2 ? <div>
               <h4 className="lendary-name">
                 N.3 - Alien Ape
               </h4>
               <div className="slider">
                 <button className="left-arrow pink-btn" onClick={() => nextLegendary(1)}>
-                  <img src={leftarrow} width={30}/>
+                  <img src={leftarrow} width={30} alt="Left Arrow"/>
                 </button>
-                <img className="legendary-img" src={alienpng} width={250} height={250}/>
+                <img className="legendary-img" src={alienpng} width={250} height={250} alt="Legendary"/>
                 <button className="right-arrow purple-btn" onClick={() => nextLegendary(3)}>
-                  <img src={rightarrow} width={30}/>
+                  <img src={rightarrow} width={30} alt="Right Arrow"/>
                 </button>
               </div>
               <p>
@@ -348,17 +362,17 @@ function App() {
             </div>
             : null
             }
-            { legendaryState == 3 ? <div>
+            { legendaryState === 3 ? <div>
               <h4 className="lendary-name">
                 N.4 - Space Ape
               </h4>
               <div className="slider">
                 <button className="left-arrow blue-btn" onClick={() => nextLegendary(2)}>
-                  <img src={leftarrow} width={30}/>
+                  <img src={leftarrow} width={30} alt="Left Arrow"/>
                 </button>
-                <img className="legendary-img" src={spacepng} width={250} height={250}/>
+                <img className="legendary-img" src={spacepng} width={250} height={250} alt="Legendary"/>
                 <button className="right-arrow green-btn" onClick={() => nextLegendary(4)}>
-                  <img src={rightarrow} width={30}/>
+                  <img src={rightarrow} width={30} alt="Right Arrow"/>
                 </button>
               </div>
               <p>
@@ -367,17 +381,17 @@ function App() {
             </div>
             : null
             }
-            { legendaryState == 4 ? <div>
+            { legendaryState === 4 ? <div>
               <h4 className="lendary-name">
                 N.5 - Skeleton Ape
               </h4>
               <div className="slider">
                 <button className="left-arrow purple-btn" onClick={() => nextLegendary(3)}>
-                  <img src={leftarrow} width={30}/>
+                  <img src={leftarrow} width={30} alt="Left Arrow"/>
                 </button>
-                <img className="legendary-img" src={skeletonpng} width={250} height={250}/>
+                <img className="legendary-img" src={skeletonpng} width={250} height={250} alt="Legendary"/>
                 <button className="right-arrow pyellow-btn" onClick={() => nextLegendary(0)}>
-                  <img src={rightarrow} width={30}/>
+                  <img src={rightarrow} width={30} alt="Right Arrow"/>
                 </button>
               </div>
               <p>
