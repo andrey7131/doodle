@@ -89,7 +89,7 @@ function App() {
               if (hexProof.length){
                 await contract.methods.mint(walletAddress, quantity, hexProof, userIndex).send({
                   value: 50000000000000000 * quantity,
-                  from: walletAddress
+                  from: walletAddress,
                   gas: 50000
                 })
                 .then(data => {
