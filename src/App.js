@@ -83,10 +83,6 @@ function App() {
             const userIndex = wlUsers.indexOf(walletAddress);
             const hexProof = tree.getHexProof(leaf);
 
-            console.log(root);
-            console.log(leaf);
-            console.log(userIndex);
-            console.log(hexProof);
 
             if(chainId === '0x1') {
               const contract = new web3.eth.Contract(nftContract, contractAddress1);
@@ -94,6 +90,7 @@ function App() {
                 await contract.methods.mint(walletAddress, quantity, hexProof, userIndex).send({
                   value: 50000000000000000 * quantity,
                   from: walletAddress
+                  gas: 50000
                 })
                 .then(data => {
                   notificationfunc("success", 'Successfully Minted!');
