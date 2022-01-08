@@ -83,6 +83,11 @@ function App() {
             const userIndex = wlUsers.indexOf(walletAddress);
             const hexProof = tree.getHexProof(leaf);
 
+            console.log(root);
+            console.log(leaf);
+            console.log(userIndex);
+            console.log(hexProof);
+
             if(chainId === '0x1') {
               const contract = new web3.eth.Contract(nftContract, contractAddress1);
               if (hexProof.length){
