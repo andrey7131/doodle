@@ -88,8 +88,8 @@ body {
 }
 
 header .button-wrap {
-    /* width: 350px; */
-    width: 280px;
+    width: 350px;
+    /* width: 280px; */
     display: flex;
     flex-direction: row;
     justify-content: space-between;

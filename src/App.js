@@ -187,9 +187,9 @@ function App() {
               <a className="ml-20" rel="noreferrer" href="https://discord.gg/PyFgjGNtGd" target="_blank">
                 <img alt="Discord" src={discordPng} width="40" height="40"/>
               </a>
-              {/* <a className="ml-20" rel="noreferrer" href="#" target="_blank">
+              <a className="ml-20" rel="noreferrer" href="https://opensea.io/collection/doodle-apes-society-das" target="_blank">
                 <img alt="Opensea" src={openseaPng} width="40" height="40"/>
-              </a> */}
+              </a>
               {walletAddress ? 
               <p className="address-text">{walletAddress.substr(0,6) + "..." + walletAddress.substr(walletAddress.length - 4)}</p> :
               <button onClick={connectWallet} className="connect-button">Connect Wallet</button>
