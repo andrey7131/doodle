@@ -359,7 +359,7 @@ function App() {
                 </button>
               </div>
               <p>
-                SHOPPING TIME! This little Alien Ape allows you to sepend 5k to buy whatever you want (PS5, Iphone, Clothes..) It's time to reward yourself with some gifts.
+                SHOPPING TIME! This little Alien Ape allows you to spend 5k to buy whatever you want (PS5, Iphone, Clothes..) It's time to reward yourself with some gifts.
               </p>
             </div>
             : null
