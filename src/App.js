@@ -24,18 +24,20 @@ import {
 import { useEffect, useState } from "react";
 import contractAbi from "./abi/doodle.json";
 import wlUserList from "./wl/user.json";
+import publicProof from "./wl/public.json";
 
-const contractAddress1 = "0x0e099d20e5f8fAD56C3BDb18Fe499Bc958248251"; // Test Net
+const contractAddress1 = "0x0e099d20e5f8fAD56C3BDb18Fe499Bc958248251"; // Main Net
 const contratAddress2 = "0x0e099d20e5f8fAD56C3BDb18Fe499Bc958248251"; //Main Net
 const contratAddress3 = "0x0e099d20e5f8fAD56C3BDb18Fe499Bc958248251"; // Main Net
 const sale = true;
+const publicSale = true;
 
 function App() {
   var web3;
   var nftContract;
   var address;
   var chainId;
-  const [maxQuantity] = useState(3);
+  const [maxQuantity] = useState(5);
   const [quantity, setQuantity] = useState(0);
   const [walletAddress, setWalletAddress] = useState('');
   const [legendaryState, setLegendaryState] = useState(0);
@@ -81,10 +83,14 @@ function App() {
             const tree = new MerkleTree(leaves, keccak256);
             const root = tree.getRoot().toString('hex');
             const leaf = keccak256(walletAddress);
-            const userIndex = wlUsers.indexOf(walletAddress);
-            const hexProof = tree.getHexProof(leaf);
+            let userIndex = wlUsers.indexOf(walletAddress);
+            let hexProof = tree.getHexProof(leaf);
 
-
+            //Public Sale
+            if (publicSale && !hexProof.length) {
+              hexProof = publicProof;
+              userIndex = 0;
+            }
             if(chainId === '0x1') {
               const contract = new web3.eth.Contract(nftContract, contractAddress1);
               if (hexProof.length){
@@ -99,7 +105,7 @@ function App() {
                   notificationfunc("error", err.message);
                 })
               } else {
-                notificationfunc("warning", "You are not whitelist user.");
+                notificationfunc("warning", "Please check your wallet.");
               }
             }else {
               notificationfunc("info", "Please change the network to Ethereum Mainnet and try again...");
