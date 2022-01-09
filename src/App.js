@@ -171,6 +171,7 @@ function App() {
                 console.log(err);
               } else {
                 let leftTokenNumber = 2500 - result;
+                if (leftTokenNumber < 0) leftTokenNumber = 0;
                 setLeftToken(leftTokenNumber);
               }
             })
